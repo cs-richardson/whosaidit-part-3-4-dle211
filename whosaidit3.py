@@ -19,16 +19,16 @@ userString = str(input("Enter text: "))
 def normalize(word):
     return "".join(letter for letter in word if letter.isalpha()).lower()
 
-# get_counts
+# getCounts
 # -----
 # This function takes a filename and generates a dictionary
 # whose keys are the unique words in the file and whose
 # values are the counts for those words.
-def get_counts(filename):
+def getCounts(filename):
     text = open(filename, "r")
     text = text.read()
     text = text.split()
-    for i in range(len(text)-1):
+    for i in range(len(text) - 1):
         text[i] = normalize(text[i])
 
     result_dict = {"_total": 0}
@@ -42,12 +42,12 @@ def get_counts(filename):
 
 # Get the counts for the two shortened versions
 # of the texts
-shakespeareCounts = get_counts("hamlet-short.txt")
-austenCounts = get_counts("pride-and-prejudice-short.txt")
+shakespeareCounts = getCounts("hamlet-short.txt")
+austenCounts = getCounts("pride-and-prejudice-short.txt")
 del austenCounts[""]
 austenCounts["_total"] -= 1
 
-# get_score
+# getScore
 # -----
 # This function takes a word and a dictionary of
 # word counts, and it generates a score that
@@ -60,14 +60,14 @@ austenCounts["_total"] -= 1
 # negative. Note that the "higher" of two
 # negative scores is the one that is less
 # negative, or the one that is closer to zero.
-def get_score(word, counts):
+def getScore(word, counts):
     denominator = float(1 + counts["_total"])
     if word in counts:
         return math.log((1 + counts[word]) / denominator)
     else:
         return math.log(1 / denominator)
 
-def predict(inputString, sCount, aCount):
+def predict(inputString, sCounts, aCounts):
     inputString = inputString.split()
     for i in range(len(inputString) - 1):
         inputString[i] = normalize(inputString[i])
@@ -75,16 +75,16 @@ def predict(inputString, sCount, aCount):
     totalShakespeareScore = 0.0
     totalAustenScore = 0.0
     for i in range(len(inputString) - 1):
-        shakespeareScore = get_score(inputString[i], sCount)
-        austenScore = get_score(inputString[i], aCount)
+        shakespeareScore = getScore(inputString[i], sCounts)
+        austenScore = getScore(inputString[i], aCounts)
         totalShakespeareScore += shakespeareScore
         totalAustenScore += austenScore
 
-    if shakespeareScore > austenScore:
+    if totalShakespeareScore > totalAustenScore:
         print("I think that was written by Shakespeare.")
-    elif austenScore > shakespeareScore:
+    elif totalAustenScore > totalShakespeareScore:
         print("I think that was written by Jane Austen.")
     else:
-        print("Error.")
+        print("I think that could be written by either Shakespeare or Jane Austen.")
 
 predict(userString, shakespeareCounts, austenCounts)

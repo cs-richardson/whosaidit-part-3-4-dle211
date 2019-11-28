@@ -32,11 +32,11 @@ def getCounts(filename):
         text[i] = normalize(text[i])
 
     result_dict = {"_total": 0}
-    for currentElement in text:
-        if currentElement not in result_dict:
-            result_dict[currentElement] = 1
-        elif currentElement in result_dict:
-            result_dict[currentElement] += 1
+    for word in text:
+        if word not in result_dict:
+            result_dict[word] = 1
+        elif word in result_dict:
+            result_dict[word] += 1
         result_dict["_total"] += 1
     return result_dict
 
